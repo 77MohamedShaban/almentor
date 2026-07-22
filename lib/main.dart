@@ -5,4 +5,5 @@ import 'core/remote/local/prefs_manager.dart';
 void main() async {
   await PrefsManager.init();
   runApp(const Almentor());
+
 }
