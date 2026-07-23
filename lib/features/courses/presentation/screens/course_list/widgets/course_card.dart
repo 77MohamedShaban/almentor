@@ -12,22 +12,22 @@ class CourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: GestureDetector(
-        onTap: () {
-          Navigator.pushNamed(
-            context,
-            RoutesName.courseDetails,
-            arguments: course,
-          );
-        },
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          RoutesName.courseDetails,
+          arguments: course,
+        );
+      },
+      child: Card(
+        clipBehavior: Clip.antiAlias,
         child: SizedBox(
           height: 130.h,
           child: Row(
             children: [
               CachedNetworkImage(
-                imageUrl: course.thumbnailUrl,
+                imageUrl: course.thumbnailUrl??"",
                 width: 120.w,
                 height: double.infinity,
                 fit: BoxFit.cover,
@@ -51,7 +51,7 @@ class CourseCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        course.title,
+                        course.title??"",
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.titleLarge,
@@ -68,7 +68,7 @@ class CourseCard extends StatelessWidget {
                           ),
                           SizedBox(width: 4.w),
                           Text(
-                            course.duration,
+                            course.durationSeconds.toString(),
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],

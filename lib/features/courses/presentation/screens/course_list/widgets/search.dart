@@ -1,5 +1,6 @@
+import 'package:almentor/features/courses/presentation/cubit/courses_cubit.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../core/resources/strings_Manager.dart';
 
 class Search extends StatelessWidget {
@@ -7,12 +8,15 @@ class Search extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return   TextField(
+    return TextField(
       decoration: InputDecoration(
         hintText: StringsManager.searchCourses,
-        prefixIcon: Icon(Icons.search),
+        prefixIcon: const Icon(Icons.search),
       ),
-      onTapUpOutside: (_)=> FocusManager.instance.primaryFocus?.unfocus(),
+      onChanged: (value) {
+        context.read<CoursesCubit>().search(value);
+      },
+      onTapUpOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
     );
   }
 }

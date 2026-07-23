@@ -1,9 +1,11 @@
-import 'package:almentor/core/resources/strings_Manager.dart';
+import 'package:almentor/core/di/di.dart';
+import 'package:almentor/core/resources/strings_manager.dart';
 import 'package:almentor/core/reusable_component/app_bar_widget.dart';
-import 'package:almentor/features/courses/data/model/course.dart';
+import 'package:almentor/features/courses/presentation/cubit/courses_cubit.dart';
 import 'package:almentor/features/courses/presentation/screens/course_list/widgets/course_card.dart';
 import 'package:almentor/features/courses/presentation/screens/course_list/widgets/search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CourseListScreen extends StatelessWidget {
@@ -11,53 +13,55 @@ class CourseListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBarWidget(
-        title: StringsManager.courses,
-        leading: const Icon(Icons.menu),
-        actions: [
-          Padding(
-            padding: REdgeInsetsDirectional.only(end: 16),
-            child: const Icon(Icons.notifications_none),
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: REdgeInsets.all(16),
-        child: Column(
-          children: [
-            Search(),
-            SizedBox(height: 24.h),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                StringsManager.allCourses,
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-            ),
-            SizedBox(height: 16.h),
-            Expanded(
-              child: ListView.separated(
-                itemCount: 4,
-                separatorBuilder: (_, _) => SizedBox(height: 16.h),
-                itemBuilder: (_, index) {
-                  return CourseCard(
-                    course: Course(
-                      id: "c001",
-                      title: "Intro to UI/UX Design",
-                      thumbnailUrl:
-                          "https://picsum.photos/seed/course1/400/225",
-                      duration: "30",
-                      description: "A short primer on UI/UX fundamentals.",
-                      videoUrl:
-                          "https://cdn.pixabay.com/video/2026/07/10/363199_large.mp4",
-                      progress: .6,
-                    ),
-                  );
-                },
-              ),
+    return BlocProvider(
+      create: (context) => getIt<CoursesCubit>()..getCourses(),
+      child: Scaffold(
+        appBar: AppBarWidget(
+          title: StringsManager.courses,
+          leading: const Icon(Icons.menu),
+          actions: [
+            Padding(
+              padding: REdgeInsetsDirectional.only(end: 16),
+              child: const Icon(Icons.notifications_none),
             ),
           ],
+        ),
+        body: Padding(
+          padding: REdgeInsets.all(16),
+          child: Column(
+            children: [
+              const Search(),
+              SizedBox(height: 24.h),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  StringsManager.allCourses,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+              ),
+              SizedBox(height: 16.h),
+              Expanded(
+                child: BlocBuilder<CoursesCubit, CoursesState>(
+                  builder: (context, state) {
+                    if (state is CoursesLoadingState) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is CoursesErrorState) {
+                      return Center(child: Text(state.message));
+                    } else if (state is CoursesSuccessState) {
+                      return ListView.separated(
+                        itemCount: state.data.length,
+                        separatorBuilder: (_, _) => SizedBox(height: 16.h),
+                        itemBuilder: (_, index) {
+                          return CourseCard(course: state.data[index]);
+                        },
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
