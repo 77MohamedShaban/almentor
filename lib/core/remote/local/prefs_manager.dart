@@ -18,7 +18,10 @@ class PrefsManager {
     return prefs.getInt('$_coursePositionKey$courseId') ?? 0;
   }
 
-  static Future<void> saveCourseProgress(String courseId, double progress) async {
+  static Future<void> saveCourseProgress(
+    String courseId,
+    double progress,
+  ) async {
     await prefs.setDouble('$_courseProgressKey$courseId', progress);
   }
 

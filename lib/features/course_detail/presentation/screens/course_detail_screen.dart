@@ -1,3 +1,4 @@
+import 'package:almentor/features/course_detail/presentation/widgets/resume_playback.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,6 +10,7 @@ import '../../../../core/reusable_component/app_bar_widget.dart';
 import '../../../courses/data/model/course.dart';
 import '../cubit/course_detail_cubit.dart';
 import '../widgets/error_occurred..dart';
+import '../widgets/title_and_des.dart';
 
 class CourseDetailScreen extends StatelessWidget {
   final Course course;
@@ -36,7 +38,11 @@ class CourseDetailScreen extends StatelessWidget {
             }
 
             if (state is CourseDetailErrorState) {
-              return ErrorOccurred(message: state.message, videoUrl: course.videoUrl ?? '', id: course.id ?? '',);
+              return ErrorOccurred(
+                message: state.message,
+                videoUrl: course.videoUrl ?? '',
+                id: course.id ?? '',
+              );
             }
 
             if (state is CourseDetailSuccessState) {
@@ -46,7 +52,10 @@ class CourseDetailScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ClipRRect(
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(20.r), topRight: Radius.circular(20.r)),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20.r),
+                        topRight: Radius.circular(20.r),
+                      ),
                       child: AspectRatio(
                         aspectRatio: state.controller.value.aspectRatio,
                         child: Stack(
@@ -89,23 +98,12 @@ class CourseDetailScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-
                     SizedBox(height: 24.h),
-
-                    Text(
-                      course.title ?? "",
-                      style: Theme.of(context).textTheme.headlineMedium,
+                    TitleAndDes(
+                      title: course.title ?? '',
+                      description: course.description ?? '',
                     ),
-
-                    SizedBox(height: 12.h),
-
-                    Text(
-                      course.description ?? "",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-
                     SizedBox(height: 24.h),
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -133,23 +131,9 @@ class CourseDetailScreen extends StatelessWidget {
 
                     SizedBox(height: 24.h),
 
-                    Card(
-                      child: ListTile(
-                        leading: const Icon(
-                          Icons.play_circle_fill,
-                          color: ColorsManager.primary,
-                        ),
-                        title: Text(StringsManager.resumePlayback),
-                        subtitle: Text(
-                          "${StringsManager.continueFrom} ${_formatDuration(state.position)}",
-                        ),
-                        trailing: const Icon(Icons.chevron_right),
-                        onTap: () {
-                          if (!state.isPlaying) {
-                            context.read<CourseDetailCubit>().togglePlay();
-                          }
-                        },
-                      ),
+                    ResumePlayback(
+                      position: state.position,
+                      isPlaying: state.isPlaying,
                     ),
 
                     SizedBox(height: 16.h),
@@ -173,12 +157,5 @@ class CourseDetailScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _formatDuration(Duration duration) {
-    final minutes = duration.inMinutes.remainder(60);
-    final seconds = duration.inSeconds.remainder(60);
-
-    return "${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
   }
 }

@@ -19,20 +19,15 @@ class CourseDetailCubit extends Cubit<CourseDetailState> {
 
   VideoPlayerController get controller => _controller!;
 
-  Future<void> initializeVideo(
-    String videoUrl,
-    String courseId,
-  ) async {
+  Future<void> initializeVideo(String videoUrl, String courseId) async {
     emit(CourseDetailLoadingState());
 
     try {
       _courseId = courseId;
-      
+
       await _connectivitySubscription?.cancel();
 
-      _controller = VideoPlayerController.networkUrl(
-        Uri.parse(videoUrl),
-      );
+      _controller = VideoPlayerController.networkUrl(Uri.parse(videoUrl));
 
       await _controller!.initialize();
 
@@ -45,13 +40,17 @@ class CourseDetailCubit extends Cubit<CourseDetailState> {
       _controller!.addListener(_videoListener);
 
       /// 2. Listen to internet connection
-      _connectivitySubscription =
-          InternetChecker.onConnectivityChanged.listen((results) {
-        final hasConnection = results.contains(ConnectivityResult.mobile) ||
+      _connectivitySubscription = InternetChecker.onConnectivityChanged.listen((
+        results,
+      ) {
+        final hasConnection =
+            results.contains(ConnectivityResult.mobile) ||
             results.contains(ConnectivityResult.wifi) ||
             results.contains(ConnectivityResult.ethernet);
 
-        if (!hasConnection && _controller != null && _controller!.value.isPlaying) {
+        if (!hasConnection &&
+            _controller != null &&
+            _controller!.value.isPlaying) {
           _controller!.pause();
           _saveProgress();
           if (!isClosed) emit(_buildSuccessState());
@@ -60,11 +59,7 @@ class CourseDetailCubit extends Cubit<CourseDetailState> {
 
       emit(_buildSuccessState());
     } catch (e) {
-      emit(
-        CourseDetailErrorState(
-          "Failed to load video",
-        ),
-      );
+      emit(CourseDetailErrorState("Failed to load video"));
     }
   }
 
@@ -123,9 +118,9 @@ class CourseDetailCubit extends Cubit<CourseDetailState> {
 
     final position = _controller!.value.position.inSeconds;
     final duration = _controller!.value.duration.inSeconds;
-    
+
     await PrefsManager.saveCoursePosition(_courseId!, position);
-    
+
     if (duration > 0) {
       final progress = position / duration;
       await PrefsManager.saveCourseProgress(_courseId!, progress);
