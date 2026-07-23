@@ -59,7 +59,7 @@ abstract final class AppTheme {
     ),
 
     progressIndicatorTheme: const ProgressIndicatorThemeData(
-      color: ColorsManager.success,
+      color: Colors.black,
       linearTrackColor: ColorsManager.border,
     ),
 

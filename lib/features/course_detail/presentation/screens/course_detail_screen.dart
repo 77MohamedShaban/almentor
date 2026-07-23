@@ -123,6 +123,7 @@ class CourseDetailScreen extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(20.r),
                       child: LinearProgressIndicator(
+                        valueColor: const AlwaysStoppedAnimation<Color>(ColorsManager.success),
                         value: state.progress,
                         minHeight: 8.h,
                         backgroundColor: ColorsManager.border,
