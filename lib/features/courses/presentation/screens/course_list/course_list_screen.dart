@@ -1,8 +1,10 @@
 import 'package:almentor/core/resources/strings_Manager.dart';
+import 'package:almentor/core/reusable_component/app_bar_widget.dart';
+import 'package:almentor/features/courses/data/model/course.dart';
 import 'package:almentor/features/courses/presentation/screens/course_list/widgets/course_card.dart';
+import 'package:almentor/features/courses/presentation/screens/course_list/widgets/search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 
 class CourseListScreen extends StatelessWidget {
   const CourseListScreen({super.key});
@@ -10,10 +12,8 @@ class CourseListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          StringsManager.courses,
-        ),
+      appBar: AppBarWidget(
+        title: StringsManager.courses,
         leading: const Icon(Icons.menu),
         actions: [
           Padding(
@@ -22,35 +22,38 @@ class CourseListScreen extends StatelessWidget {
           ),
         ],
       ),
-      body:  Padding(
+      body: Padding(
         padding: REdgeInsets.all(16),
         child: Column(
           children: [
-            TextField(
-              decoration: InputDecoration(
-                hintText: StringsManager.searchCourses,
-                prefixIcon: Icon(Icons.search),
-              ),
-            ),
-
+            Search(),
             SizedBox(height: 24.h),
-
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-               StringsManager.allCourses ,
+                StringsManager.allCourses,
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
             ),
-
             SizedBox(height: 16.h),
-
             Expanded(
               child: ListView.separated(
                 itemCount: 4,
-                separatorBuilder: (_,_) => SizedBox(height: 16.h),
+                separatorBuilder: (_, _) => SizedBox(height: 16.h),
                 itemBuilder: (_, index) {
-                  return Container();
+                  return CourseCard(
+                    course: Course(
+                      id: "c001",
+                      title: "Intro to UI/UX Design",
+                      thumbnailUrl:
+                          "https://picsum.photos/seed/course1/400/225",
+                      duration: "30",
+                      description: "A short primer on UI/UX fundamentals.",
+                      videoUrl:
+                          "https://cdn.pixabay.com/video/2026/07/10/363199_large.mp4",
+                      progress: .6,
+                    ),
+                  );
                 },
               ),
             ),
