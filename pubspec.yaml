@@ -45,6 +45,7 @@ dependencies:
   connectivity_plus: ^7.1.1
   injectable: ^3.0.0
   get_it:
+  video_player: ^2.11.1
 
 dev_dependencies:
   injectable_generator:
