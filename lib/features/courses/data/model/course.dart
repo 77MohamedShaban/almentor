@@ -6,6 +6,7 @@ class Course {
   final String? description;
   final String? videoUrl;
   final double progress;
+  final int positionInSeconds;
 
 
   Course({
@@ -14,7 +15,7 @@ class Course {
      this.thumbnailUrl,
      this.durationSeconds,
      this.description,
-     this.videoUrl, this.progress =0,
+     this.videoUrl, this.progress =0, this.positionInSeconds = 0,
   });
 
   factory Course.fromJson(Map<String, dynamic> json) {

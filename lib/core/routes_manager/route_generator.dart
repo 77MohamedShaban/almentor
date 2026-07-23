@@ -4,6 +4,7 @@ import 'package:page_transition/page_transition.dart';
 
 import '../../features/course_detail/presentation/screens/course_detail_screen.dart';
 import '../../features/courses/presentation/screens/course_list_screen.dart';
+import '../../features/courses/data/model/course.dart';
 
 class RouteGenerator {
   static Route<dynamic>? getRoute(RouteSettings settings) {
@@ -15,9 +16,10 @@ class RouteGenerator {
           settings: settings,
         );
       case RoutesName.courseDetails:
+        final course = settings.arguments as Course;
         return PageTransition(
           type: PageTransitionType.fade,
-          child: const CourseDetailScreen(),
+          child: CourseDetailScreen(course: course),
           settings: settings,
         );
       default:

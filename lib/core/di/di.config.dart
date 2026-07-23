@@ -12,6 +12,8 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../../features/course_detail/presentation/cubit/course_detail_cubit.dart'
+    as _i649;
 import '../../features/courses/data/datasource/course_local_dao.dart' as _i367;
 import '../../features/courses/data/datasource/course_local_dao_impl.dart'
     as _i164;
@@ -30,6 +32,7 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    gh.factory<_i649.CourseDetailCubit>(() => _i649.CourseDetailCubit());
     gh.factory<_i367.CourseLocalDao>(() => _i164.CourseLocalDaoImpl());
     gh.factory<_i490.CourseRepository>(
       () => _i739.CourseRepositoryImpl(
