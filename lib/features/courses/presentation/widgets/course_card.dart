@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../core/resources/colors_manager.dart';
 import '../../../../../../core/routes_manager/routes_name.dart';
-import '../../../../data/model/course.dart';
+import '../../data/model/course.dart';
 
 class CourseCard extends StatelessWidget {
   final Course course;

@@ -2,11 +2,12 @@ import 'package:almentor/core/di/di.dart';
 import 'package:almentor/core/resources/strings_manager.dart';
 import 'package:almentor/core/reusable_component/app_bar_widget.dart';
 import 'package:almentor/features/courses/presentation/cubit/courses_cubit.dart';
-import 'package:almentor/features/courses/presentation/screens/course_list/widgets/course_card.dart';
-import 'package:almentor/features/courses/presentation/screens/course_list/widgets/search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../widgets/course_card.dart';
+import '../widgets/search.dart';
 
 class CourseListScreen extends StatelessWidget {
   const CourseListScreen({super.key});
