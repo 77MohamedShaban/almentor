@@ -1,5 +1,8 @@
+import 'package:almentor/core/remote/local/prefs_manager.dart';
+import 'package:almentor/features/courses/presentation/cubit/courses_cubit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../core/resources/colors_manager.dart';
 import '../../../../../../core/routes_manager/routes_name.dart';
@@ -12,13 +15,18 @@ class CourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double currentProgress = PrefsManager.getCourseProgress(course.id ?? "");
+
     return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(
+      onTap: () async {
+        await Navigator.pushNamed(
           context,
           RoutesName.courseDetails,
           arguments: course,
         );
+        if (context.mounted) {
+          context.read<CoursesCubit>().refresh();
+        }
       },
       child: Card(
         clipBehavior: Clip.antiAlias,
@@ -27,7 +35,7 @@ class CourseCard extends StatelessWidget {
           child: Row(
             children: [
               CachedNetworkImage(
-                imageUrl: course.thumbnailUrl??"",
+                imageUrl: course.thumbnailUrl ?? "",
                 width: 120.w,
                 height: double.infinity,
                 fit: BoxFit.cover,
@@ -51,7 +59,7 @@ class CourseCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        course.title??"",
+                        course.title ?? "",
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.titleLarge,
@@ -68,7 +76,7 @@ class CourseCard extends StatelessWidget {
                           ),
                           SizedBox(width: 4.w),
                           Text(
-                            course.durationSeconds.toString(),
+                            "${course.durationSeconds.toString()} sec",
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],
@@ -82,8 +90,10 @@ class CourseCard extends StatelessWidget {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(100.r),
                               child: LinearProgressIndicator(
-                                value: course.progress,
+                                value: currentProgress,
                                 minHeight: 8.h,
+                                backgroundColor: ColorsManager.border,
+                                valueColor: const AlwaysStoppedAnimation<Color>(ColorsManager.primary),
                               ),
                             ),
                           ),
@@ -91,7 +101,7 @@ class CourseCard extends StatelessWidget {
                           SizedBox(width: 12.w),
 
                           Text(
-                            "${(course.progress * 100).toInt()}%",
+                            "${(currentProgress * 100).toInt()}%",
                             style: Theme.of(context).textTheme.labelMedium,
                           ),
                         ],

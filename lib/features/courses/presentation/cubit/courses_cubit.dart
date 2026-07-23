@@ -28,6 +28,12 @@ class CoursesCubit extends Cubit<CoursesState> {
     }
   }
 
+  void refresh() {
+    if (state is CoursesSuccessState) {
+      emit(CoursesSuccessState(List.from(_allCourses)));
+    }
+  }
+
   void search(String query) {
     if (query.isEmpty) {
       emit(CoursesSuccessState(_allCourses));
