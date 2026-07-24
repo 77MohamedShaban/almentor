@@ -44,3 +44,9 @@ final class CourseDetailErrorState extends CourseDetailState {
 
   CourseDetailErrorState(this.message);
 }
+
+final class NoInternetState extends CourseDetailState {
+  final String message;
+
+  NoInternetState(this.message);
+}
