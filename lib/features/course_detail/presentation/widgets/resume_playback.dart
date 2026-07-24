@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/resources/colors_manager.dart';
+import '../../../../core/resources/Functions.dart';
 import '../../../../core/resources/strings_Manager.dart';
 import '../cubit/course_detail_cubit.dart';
 
@@ -21,7 +22,7 @@ class ResumePlayback extends StatelessWidget {
         ),
         title: Text(StringsManager.resumePlayback),
         subtitle: Text(
-          "${StringsManager.continueFrom} ${_formatDuration(position)}",
+          "${StringsManager.continueFrom} ${Functions.formatDuration(position)}",
         ),
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
@@ -31,11 +32,5 @@ class ResumePlayback extends StatelessWidget {
         },
       ),
     );
-  }
-  String _formatDuration(Duration duration) {
-    final minutes = duration.inMinutes.remainder(60);
-    final seconds = duration.inSeconds.remainder(60);
-
-    return "${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
   }
 }
