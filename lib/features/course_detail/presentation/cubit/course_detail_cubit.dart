@@ -17,6 +17,9 @@ class CourseDetailCubit extends Cubit<CourseDetailState> {
   String? _courseId;
   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
 
+  Duration _lastPosition = Duration.zero;
+  int _lastSavedSecond = -1;
+
   VideoPlayerController get controller => _controller!;
 
   Future<void> initializeVideo(String videoUrl, String courseId) async {
@@ -25,9 +28,17 @@ class CourseDetailCubit extends Cubit<CourseDetailState> {
     try {
       _courseId = courseId;
 
+      _lastPosition = Duration.zero;
+      _lastSavedSecond = -1;
+
       await _connectivitySubscription?.cancel();
 
-      _controller = VideoPlayerController.networkUrl(Uri.parse(videoUrl));
+      await _controller?.dispose();
+      _controller = null;
+
+      _controller = VideoPlayerController.networkUrl(
+        Uri.parse(videoUrl),
+      );
 
       await _controller!.initialize();
 
@@ -42,7 +53,7 @@ class CourseDetailCubit extends Cubit<CourseDetailState> {
       /// 2. Listen to internet connection
       _connectivitySubscription = InternetChecker.onConnectivityChanged.listen((
         results,
-      ) {
+      ) async {
         final hasConnection =
             results.contains(ConnectivityResult.mobile) ||
             results.contains(ConnectivityResult.wifi) ||
@@ -51,9 +62,12 @@ class CourseDetailCubit extends Cubit<CourseDetailState> {
         if (!hasConnection &&
             _controller != null &&
             _controller!.value.isPlaying) {
-          _controller!.pause();
-          saveProgress();
-          if (!isClosed) emit(_buildSuccessState());
+          await _controller!.pause();
+          await saveProgress();
+
+          if (!isClosed) {
+            emit(_buildSuccessState());
+          }
         }
       });
 
@@ -85,7 +99,28 @@ class CourseDetailCubit extends Cubit<CourseDetailState> {
 
     if (state is! CourseDetailSuccessState) return;
 
-    emit(_buildSuccessState());
+    final position = _controller!.value.position;
+
+    if (position.inSeconds != _lastPosition.inSeconds) {
+      _lastPosition = position;
+
+      emit(_buildSuccessState());
+
+      // Save every 5 seconds
+      if (position.inSeconds > 0 &&
+          position.inSeconds % 5 == 0 &&
+          position.inSeconds != _lastSavedSecond) {
+        _lastSavedSecond = position.inSeconds;
+        unawaited(saveProgress());
+      }
+
+      // Reset progress when video finishes
+      if (_controller!.value.duration != Duration.zero &&
+          position >= _controller!.value.duration) {
+        PrefsManager.saveCoursePosition(_courseId!, 0);
+        PrefsManager.saveCourseProgress(_courseId!, 0);
+      }
+    }
   }
 
   Future<void> togglePlay() async {
@@ -93,7 +128,10 @@ class CourseDetailCubit extends Cubit<CourseDetailState> {
 
     if (!_controller!.value.isPlaying) {
       final hasInternet = await InternetChecker.checkConnection();
-      if (!hasInternet) return;
+      if (!hasInternet) {
+        emit(NoInternetState("No Internet Connection"));
+        return;
+      }
       await _controller!.play();
     } else {
       await _controller!.pause();
@@ -112,7 +150,7 @@ class CourseDetailCubit extends Cubit<CourseDetailState> {
     if (!isClosed) emit(_buildSuccessState());
   }
 
-  /// Made public to ensure save finishes before navigation
+  /// 3. Save progress using PrefsManager methods
   Future<void> saveProgress() async {
     if (_controller == null || _courseId == null) return;
 
