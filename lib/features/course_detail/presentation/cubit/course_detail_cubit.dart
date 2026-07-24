@@ -52,7 +52,7 @@ class CourseDetailCubit extends Cubit<CourseDetailState> {
             _controller != null &&
             _controller!.value.isPlaying) {
           _controller!.pause();
-          _saveProgress();
+          saveProgress();
           if (!isClosed) emit(_buildSuccessState());
         }
       });
@@ -97,7 +97,7 @@ class CourseDetailCubit extends Cubit<CourseDetailState> {
       await _controller!.play();
     } else {
       await _controller!.pause();
-      await _saveProgress();
+      await saveProgress();
     }
 
     if (!isClosed) emit(_buildSuccessState());
@@ -107,13 +107,13 @@ class CourseDetailCubit extends Cubit<CourseDetailState> {
     if (_controller == null) return;
 
     await _controller!.seekTo(position);
-    await _saveProgress();
+    await saveProgress();
 
     if (!isClosed) emit(_buildSuccessState());
   }
 
-  /// 3. Save progress using PrefsManager methods
-  Future<void> _saveProgress() async {
+  /// Made public to ensure save finishes before navigation
+  Future<void> saveProgress() async {
     if (_controller == null || _courseId == null) return;
 
     final position = _controller!.value.position.inSeconds;
@@ -129,7 +129,7 @@ class CourseDetailCubit extends Cubit<CourseDetailState> {
 
   @override
   Future<void> close() async {
-    await _saveProgress();
+    await saveProgress();
     await _connectivitySubscription?.cancel();
     _controller?.removeListener(_videoListener);
     await _controller?.dispose();
