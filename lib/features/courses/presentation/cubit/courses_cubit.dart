@@ -22,7 +22,7 @@ class CoursesCubit extends Cubit<CoursesState> {
     switch(result) {
       case Success<List<Course>>():
         _allCourses = result.response;
-        emit(CoursesSuccessState(_allCourses));
+        emit(CoursesSuccessState(_allCourses, timestamp: DateTime.now()));
       case Failure<List<Course>>():
         emit(CoursesErrorState(result.message));
     }
@@ -30,19 +30,20 @@ class CoursesCubit extends Cubit<CoursesState> {
 
   void refresh() {
     if (state is CoursesSuccessState) {
-      emit(CoursesSuccessState(List.from(_allCourses)));
+      // Using a new timestamp and a fresh list instance forces BlocBuilder to rebuild
+      emit(CoursesSuccessState(List.from(_allCourses), timestamp: DateTime.now()));
     }
   }
 
   void search(String query) {
     if (query.isEmpty) {
-      emit(CoursesSuccessState(_allCourses));
+      emit(CoursesSuccessState(_allCourses, timestamp: DateTime.now()));
     } else {
       final filteredCourses = _allCourses
           .where((course) =>
-              course.title?.toLowerCase().contains(query.toLowerCase()) ?? false)
+      course.title?.toLowerCase().contains(query.toLowerCase()) ?? false)
           .toList();
-      emit(CoursesSuccessState(filteredCourses));
+      emit(CoursesSuccessState(filteredCourses, timestamp: DateTime.now()));
     }
   }
 }

@@ -7,9 +7,12 @@ final class CoursesInitial extends CoursesState {}
 
 final class CoursesSuccessState extends CoursesState {
   final List<Course> data;
-  CoursesSuccessState(this.data);
+  final DateTime? timestamp; // Added to force rebuild
+  CoursesSuccessState(this.data, {this.timestamp});
 }
+
 final class CoursesLoadingState extends CoursesState {}
+
 final class CoursesErrorState extends CoursesState {
   final String message;
   CoursesErrorState(this.message);
