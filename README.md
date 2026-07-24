@@ -11,16 +11,16 @@ modern Flutter development practices.
    <table style="width:100%">
     <tr>
       <td>
-        <img width="200" alt="splash_screen" src="" />
+        <img width="200" alt="splash_screen" src="https://github.com/user-attachments/assets/efb64506-ab75-42bc-98c2-99f594ed2811" />
       </td>
       <td>
-        <img width="200" alt="splash_screen" src="" />
+        <img width="200" alt="splash_screen" src="https://github.com/user-attachments/assets/e795e38c-fd2e-46ec-a956-e13f02251053" />
       </td>
       <td>
-        <img width="200" alt="splash_screen" src="" />
+        <img width="200" alt="splash_screen" src="https://github.com/user-attachments/assets/33bafb33-ddec-4067-9a89-4f6be299851b" />
       </td>
       <td>
-        <img width="200" alt="splash_screen" src="" />
+        <img width="200" alt="splash_screen" src="https://github.com/user-attachments/assets/c6f0cdb7-de99-4421-9202-10ce89015788" />
       </td>
     </tr>
   </table>
@@ -127,4 +127,4 @@ flutter test
 
 ## 📝 License
 
-This project is a private slice of the Almentor platform.
+**Maintained by MOHAMED SHABAN Zakaryia**
